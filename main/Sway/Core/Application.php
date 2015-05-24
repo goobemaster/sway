@@ -1,0 +1,63 @@
+<?php
+
+namespace Sway\Core;
+
+require_once 'autoload.php';
+
+use Sway\Config;
+
+class Application {
+  const environment = null;
+  private $modelManager;
+  private $request;
+  private $response;
+
+  public function __construct(EnvironmentDetails $environment, $models = array(), $allowedMethods = array('GET', 'POST', 'PUT', 'DELETE')) {
+    $this->environment = $environment;
+    $this->modelManager = new ModelManager($environment, $models);
+    $this->request = new Request();
+
+    $requestMethod = $this->request->method;
+    if (in_array($requestMethod, $allowedMethods)) {
+      $this->$requestMethod();
+    } else {
+      $this->response = Response::METHOD_NOT_ALLOWED();
+    }
+
+    $this->response->commit();
+  }
+
+  // Fetch
+  private function GET() {
+  }
+
+  // Update
+  private function POST() {
+  }
+
+  // Create
+  private function PUT() {
+    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+
+    if ($model == null) {
+      $this->response = Response::MODEL_NOT_FOUND();
+      return;
+    }
+
+    if (!$model->populate($this->request->headers)) {
+      $this->response = Response::MODEL_CANNOT_BE_POPULATED();
+      return;
+    }
+
+    if ($model->insert()) {
+      $this->response = Response::OK("Created");
+    } else {
+      $this->response = Response::INTERNAL_SERVER_ERROR("Database transaction failed!");
+    }
+  }
+
+  // Remove
+  private function DELETE() {
+  }
+
+}
