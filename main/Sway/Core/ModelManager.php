@@ -4,6 +4,9 @@ namespace Sway\Core;
 
 require_once 'autoload.php';
 
+use Sway\Config\EnvironmentDetails;
+use Sway\Helpers\StringTools;
+
 class ModelManager {
   private $environment;
   private $models;

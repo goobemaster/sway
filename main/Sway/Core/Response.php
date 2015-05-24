@@ -4,8 +4,6 @@ namespace Sway\Core;
 
 require_once 'autoload.php';
 
-use Sway\Core\ResponseDetails;
-
 final class Response {
   // 2xx - Success
   public static function OK($message = null) { return new ResponseDetails(200, "OK", $message); }

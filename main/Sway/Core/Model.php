@@ -2,18 +2,30 @@
 
 namespace Sway\Core;
 
+use Sway\Config\EnvironmentDetails;
+use Sway\Helpers\SqlEngine;
+
 class Model {
   private $sqlEngine;
+  private $allowedMethods;
 
-  public function __construct(EnvironmentDetails $environment) {
+  public function __construct(EnvironmentDetails $environment, $allowedMethods = array('GET', 'POST', 'PUT', 'DELETE')) {
     $this->sqlEngine = new SqlEngine($environment->dbHost(), $environment->dbPort(), $environment->dbUsername(), $environment->dbPassword(), $environment->dbName());
+    $this->allowedMethods = $allowedMethods;
+  }
+
+  public function allowedMethods() {
+    return $this->allowedMethods;
   }
 
   public function populate($fields) {
     if (empty($fields)) return false;
 
     foreach ($fields as $key => $value) {
-      if (property_exists($this, $key) && $this->$key != 'primaryKey') {
+      $filteredKeys = array('sqlEngine', 'allowedMethods');
+      $filteredValues = array();
+
+      if (property_exists($this, $key) && !in_array($value, $filteredValues) && !in_array($key, $filteredKeys) && $this->$key != 'primaryKey') {
         $this->{$key} = $value;
       }
     }

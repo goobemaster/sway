@@ -1,6 +1,8 @@
 <?php
 
-namespace Sway\Core;
+namespace Sway\Helpers;
+
+use Sway\Core\Model;
 
 class SqlEngine {
   private $dbHost;

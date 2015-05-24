@@ -1,6 +1,6 @@
 <?php
 
-namespace Sway\Core;
+namespace Sway\Helpers;
 
 class StringTools {
   private $subject;

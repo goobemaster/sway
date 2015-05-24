@@ -1,6 +1,6 @@
 <?php
 
-namespace Sway\Core;
+namespace Sway\Config;
 
 final class EnvironmentDetails {
   private $dbEngine;

@@ -4,7 +4,7 @@ namespace Sway\Core;
 
 require_once 'autoload.php';
 
-use Sway\Config;
+use Sway\Config\EnvironmentDetails;
 
 class Application {
   const environment = null;
@@ -21,7 +21,7 @@ class Application {
     if (in_array($requestMethod, $allowedMethods)) {
       $this->$requestMethod();
     } else {
-      $this->response = Response::METHOD_NOT_ALLOWED();
+      $this->response = Response::METHOD_NOT_ALLOWED('Due to global config');
     }
 
     $this->response->commit();
@@ -41,6 +41,11 @@ class Application {
 
     if ($model == null) {
       $this->response = Response::MODEL_NOT_FOUND();
+      return;
+    }
+
+    if (!in_array('PUT', $model->allowedMethods())) {
+      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
       return;
     }
 

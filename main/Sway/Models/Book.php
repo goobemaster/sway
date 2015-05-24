@@ -5,7 +5,7 @@ namespace Sway\Models;
 require_once 'autoload.php';
 
 use Sway\Core\Model;
-use Sway\Core\EnvironmentDetails;
+use Sway\Config\EnvironmentDetails;
 
 class Book extends Model {
   public $id = 'primaryKey';
@@ -15,6 +15,6 @@ class Book extends Model {
   public $edition = '';
 
   public function __construct(EnvironmentDetails $environment) {
-    parent::__construct($environment);
+    parent::__construct($environment, ['GET', 'PUT']);
   }
 }
