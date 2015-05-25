@@ -36,4 +36,22 @@ class SqlEngine {
     $mysqli->close();
     return true;
   }
+
+  public function select(Model $model, $fields) {
+    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+    if ($mysqli->connect_error) {
+      $mysqli->close();
+      return false;
+    }
+
+    if ($result = $mysqli->query($this->sqlQueryFactory->select($model, $fields))) {
+      $r = $result->fetch_all(MYSQLI_ASSOC);
+      $result->close();
+      $mysqli->close();
+      return $r;
+    }
+
+    $mysqli->close();
+    return false;
+  }
 }

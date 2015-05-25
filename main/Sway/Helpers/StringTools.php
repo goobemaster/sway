@@ -32,4 +32,13 @@ class StringTools {
     $stringTool = new StringTools($subject);
     return $stringTool->snakeCase();
   }
+
+  public function startsWith($needle) {
+    return substr($this->subject, 0, strlen($needle)) === $needle;
+  }
+
+  public static function doesStartsWith($subject, $needle) {
+    $stringTool = new StringTools($subject);
+    return $stringTool->startsWith($needle);
+  }
 }

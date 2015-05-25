@@ -2,6 +2,8 @@
 
 namespace Sway\Core;
 
+use Sway\Helpers\StringTools;
+
 final class ResponseDetails {
   private $code;
   private $name;
@@ -25,6 +27,8 @@ final class ResponseDetails {
     http_response_code($this->code);
     if (empty($this->message)) {
       print_r('{ "' . $this->code . '": "' . $this->name . '" }');
+    } else if (StringTools::doesStartsWith($this->message, 'Entity:')) {
+      print_r(substr($this->message, 7));
     } else {
       print_r('{ "' . $this->code . ' - ' . $this->name . '": "' . $this->message . '" }');
     }

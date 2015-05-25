@@ -37,6 +37,15 @@ class Model {
     return $this->sqlEngine->insert($this);
   }
 
+  public function select($fields) {
+    $dbFields = $this->sqlEngine->select($this, $fields);
+    if (!empty($dbFields)) {
+      return json_encode($dbFields, JSON_FORCE_OBJECT | JSON_PRETTY_PRINT);
+    } else {
+      return false;
+    }
+  }
+
   public function toJSON() {
     $json = "{\n";
     foreach($this as $key => $value) { $json .= '"' . $key . '": ' . '"' . $value . "\",\n"; }
