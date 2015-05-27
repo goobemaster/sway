@@ -24,7 +24,6 @@ final class ResponseDetails {
   }
 
   public function commit() {
-    http_response_code($this->code);
     if (empty($this->message)) {
       print_r('{ "' . $this->code . '": "' . $this->name . '" }');
     } else if (StringTools::doesStartsWith($this->message, 'Entity:')) {
@@ -32,5 +31,6 @@ final class ResponseDetails {
     } else {
       print_r('{ "' . $this->code . ' - ' . $this->name . '": "' . $this->message . '" }');
     }
+    http_response_code($this->code);
   }
 }

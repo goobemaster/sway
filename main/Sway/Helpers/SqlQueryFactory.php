@@ -5,8 +5,23 @@ namespace Sway\Helpers;
 use Sway\Core\Model;
 
 class SqlQueryFactory {
+  // Helpers
+  private function tableName(Model $model) {
+    return StringTools::snakeCaseMe(explode('\\', get_class($model))[2]);
+  }
+
+  private function constructWhere($fields) {
+    $where = array();
+    foreach ($fields as $key => $value) {
+      $fields[$key] = '"' . $value . '"';
+      array_push($where, ' ' . $key . '="' . $value . '"');
+    }
+    return $where;
+  }
+
+  // Operations
   function insert(Model $model) {
-    $table = StringTools::snakeCaseMe(explode('\\', get_class($model))[2]);
+    $table = $this->tableName($model);
     $columns = array();
     $values = array();
 
@@ -21,14 +36,24 @@ class SqlQueryFactory {
   }
 
   function select(Model $model, $fields) {
-    $table = StringTools::snakeCaseMe(explode('\\', get_class($model))[2]);
-    $where = array();
+    $table = $this->tableName($model);
+    $where = $this->constructWhere($fields);
 
-    foreach ($fields as $key => $value) {
-      $fields[$key] = '"' . $value . '"';
-      array_push($where, ' ' . $key . '="' . $value . '"');
+    if (count($where) > 1) {
+      return 'SELECT * FROM ' . $table . ' WHERE ' . implode(' AND', $where) . ';';
+    } else {
+      return 'SELECT * FROM ' . $table . ' WHERE ' . $where[0] . ';';
     }
+  }
 
-    return 'SELECT * FROM ' . $table . ' WHERE ' . implode(' AND', $where) . ';';
+  function delete(Model $model, $fields) {
+    $table = $this->tableName($model);
+    $where = $this->constructWhere($fields);
+
+    if (count($where) > 1) {
+      return 'DELETE FROM ' . $table . ' WHERE ' . implode(' AND', $where) . ';';
+    } else {
+      return 'DELETE FROM ' . $table . ' WHERE ' . $where[0] . ';';
+    }
   }
 }

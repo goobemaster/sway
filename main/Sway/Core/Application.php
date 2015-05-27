@@ -48,13 +48,18 @@ class Application {
 
     if ($json = $model->select($this->request->query)) {
       $this->response = Response::OK('Entity:' . $json);
+      // Hack, because NULL == FALSE
+      return;
+    } else if (is_bool($json)) {
+      $this->response = Response::INTERNAL_SERVER_ERROR('Database transaction failed!');
     } else {
-      $this->response = Response::INTERNAL_SERVER_ERROR('Database transaction failed (no results)!');
+      $this->response = Response::NO_RESULTS();
     }
   }
 
   // Update
   private function POST() {
+
   }
 
   // Create
@@ -85,6 +90,32 @@ class Application {
 
   // Remove
   private function DELETE() {
+    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+
+    if ($model == null) {
+      $this->response = Response::MODEL_NOT_FOUND();
+      return;
+    }
+
+    if (!in_array('DELETE', $model->allowedMethods())) {
+      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
+      return;
+    }
+
+    if (empty($this->request->headers)) {
+      $this->response = Response::NO_FIELDS_PROVIDED();
+      return;
+    }
+
+    if ($records = $model->delete($this->request->headers)) {
+      $this->response = Response::OK($records . ' record(s) deleted');
+      // Hack, because NULL == FALSE
+      return;
+    } else if (is_bool($records)) {
+      $this->response = Response::INTERNAL_SERVER_ERROR('Database transaction failed!');
+    } else {
+      $this->response = Response::NO_MATCHING_RECORD();
+    }
   }
 
 }

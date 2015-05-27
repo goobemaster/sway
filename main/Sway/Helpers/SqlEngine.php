@@ -44,11 +44,30 @@ class SqlEngine {
       return false;
     }
 
-    if ($result = $mysqli->query($this->sqlQueryFactory->select($model, $fields))) {
-      $r = $result->fetch_all(MYSQLI_ASSOC);
-      $result->close();
-      $mysqli->close();
+    $result = $mysqli->query($this->sqlQueryFactory->select($model, $fields));
+    $r = $result->fetch_all(MYSQLI_ASSOC);
+    $result->close();
+    $mysqli->close();
+    if (count($r) == 0) {
+      return null;
+    } else {
       return $r;
+    }
+
+  }
+
+  public function delete(Model $model, $fields) {
+    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+    if ($mysqli->connect_error) {
+      $mysqli->close();
+      return false;
+    }
+
+    if ($mysqli->query($this->sqlQueryFactory->delete($model, $fields))) {
+      $affectedRows = $mysqli->affected_rows;
+      $mysqli->close();
+      if ($affectedRows == 0) return null;
+      return $affectedRows;
     }
 
     $mysqli->close();

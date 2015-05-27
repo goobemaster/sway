@@ -13,6 +13,8 @@ final class Response {
             public static function MODEL_NOT_FOUND($message = null) { return new ResponseDetails(453, "Model cannot be found", $message); }
   public static function MODEL_CANNOT_BE_POPULATED($message = null) { return new ResponseDetails(454, "Model could not be populated!", $message); }
          public static function NO_FIELDS_PROVIDED($message = null) { return new ResponseDetails(455, "No fields provided!", $message); }
+         public static function NO_MATCHING_RECORD($message = null) { return new ResponseDetails(456, "No matching record(s)!", $message); }
+                 public static function NO_RESULTS($message = null) { return new ResponseDetails(457, "No results!", $message); }
 
   // 5xx - Server Error
   public static function INTERNAL_SERVER_ERROR($message = null) { return new ResponseDetails(500, "Internal Server Error", $message); }
