@@ -2,6 +2,8 @@
 
 This documentation will be more complete as the project progresses. Sway is still a very young project, and hence stay away from using it in live projects.
 
+There's loads of stuff on the roadmap.
+
 # Overview
 
 Sway in its current form is a bare minimum RESTful Web Service written in PHP, in a 100% object oriented fashion (actually there's one object in the global space supposed to be implemented by the user).
@@ -65,3 +67,37 @@ class MyApplication extends Application {
 
 $my_application = new MyApplication();
 ```
+
+# Methods
+
+The first path segment after hostname refers to a model.
+
+[Example.sql](https://github.com/goobemaster/sway/blob/master/resources/Example.sql)
+
+[Example.postman_dump](https://github.com/goobemaster/sway/blob/master/resources/Example.postman_dump)
+
+## GET
+
+Each parameter is a WHERE clause.
+
+{{host}}/book?title=War %26 Peace
+
+{{host}}/book?title=War %26 Peace&edition=1
+
+## PUT
+
+Fields are extracted from headers.
+
+{{host}}/book
+
+## DELETE
+
+Fields are extracted from headers, and each one is a WHERE clause.
+
+{{host}}/book
+
+## POST
+
+Used to update an existing record. Each URL parameter is a WHERE clause. Values should be sent as form data (x-www-form-urlencoded).
+
+{{host}}/book?title=War %26 Peace
