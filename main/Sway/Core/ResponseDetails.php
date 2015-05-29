@@ -47,6 +47,6 @@ final class ResponseDetails {
     } else {
       print_r('{ "' . $this->code . ' - ' . $this->name . '": "' . $this->message . '" }');
     }
-    http_response_code($this->code);
+    header('HTTP/1.1 ' . $this->code . ' ' . $this->name);
   }
 }
