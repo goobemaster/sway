@@ -8,7 +8,8 @@
 			"order": [
 				"b99e0a8c-0339-fb65-a448-8c1935f0f3ab",
 				"fd69bd84-cc6f-65d5-37c4-aa3c9d1f2c27",
-				"e9d49aeb-134e-ca23-7259-afda4b217e8f"
+				"e9d49aeb-134e-ca23-7259-afda4b217e8f",
+				"3135c6af-46bb-bd03-1cbf-c812eba44f82"
 			],
 			"folders": [],
 			"timestamp": 1432339806419,
@@ -19,8 +20,36 @@
 			"subscribed": false,
 			"remoteLink": "",
 			"public": false,
+			"createdAt": null,
+			"updatedAt": null,
 			"write": true,
 			"requests": [
+				{
+					"id": "3135c6af-46bb-bd03-1cbf-c812eba44f82",
+					"headers": "",
+					"url": "{{host}}/book?title=War %26 Peace",
+					"preRequestScript": "",
+					"pathVariables": {},
+					"method": "POST",
+					"data": [
+						{
+							"key": "title",
+							"value": "Peace & War",
+							"type": "text",
+							"enabled": true
+						}
+					],
+					"dataMode": "urlencoded",
+					"version": 2,
+					"tests": "",
+					"currentHelper": "normal",
+					"helperAttributes": {},
+					"time": 1432845803593,
+					"name": "Update Book",
+					"description": "",
+					"collectionId": "3831b1e7-aab7-9593-a621-915497cc29a3",
+					"responses": []
+				},
 				{
 					"id": "b99e0a8c-0339-fb65-a448-8c1935f0f3ab",
 					"headers": "",

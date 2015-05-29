@@ -44,7 +44,8 @@ class SqlEngine {
       return false;
     }
 
-    $result = $mysqli->query($this->sqlQueryFactory->select($model, $fields));
+    if (!$result = $mysqli->query($this->sqlQueryFactory->select($model, $fields))) return false;
+
     $r = $result->fetch_all(MYSQLI_ASSOC);
     $result->close();
     $mysqli->close();
@@ -68,9 +69,27 @@ class SqlEngine {
       $mysqli->close();
       if ($affectedRows == 0) return null;
       return $affectedRows;
+    } else {
+      $mysqli->close();
+      return false;
+    }
+  }
+
+  public function update(Model $model, $whereFields, $fields) {
+    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+    if ($mysqli->connect_error) {
+      $mysqli->close();
+      return false;
     }
 
-    $mysqli->close();
-    return false;
+    if ($mysqli->query($this->sqlQueryFactory->update($model, $whereFields, $fields))) {
+      $affectedRows = $mysqli->affected_rows;
+      $mysqli->close();
+      if ($affectedRows == 0) return null;
+      return $affectedRows;
+    } else {
+      $mysqli->close();
+      return false;
+    }
   }
 }

@@ -59,6 +59,28 @@ class Application {
 
   // Update
   private function POST() {
+    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+
+    if ($model == null) {
+      $this->response = Response::MODEL_NOT_FOUND();
+      return;
+    }
+
+    if (!in_array('POST', $model->allowedMethods())) {
+      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
+      return;
+    }
+
+    $records = $model->update($this->request->query, $this->request->form);
+
+    if ($records instanceof ResponseDetails) {
+      $this->response = $records;
+      return;
+    } else if ($records) {
+      $this->response = Response::OK($records . ' record(s) updated');
+    } else {
+      $this->response = Response::INTERNAL_SERVER_ERROR('Database transaction failed!');
+    }
 
   }
 

@@ -20,7 +20,7 @@ class SqlQueryFactory {
   }
 
   // Operations
-  function insert(Model $model) {
+  public function insert(Model $model) {
     $table = $this->tableName($model);
     $columns = array();
     $values = array();
@@ -35,7 +35,7 @@ class SqlQueryFactory {
     return 'INSERT INTO ' . $table . ' (' . implode(',', $columns) . ') VALUES (' . implode(',', $values) . ');';
   }
 
-  function select(Model $model, $fields) {
+  public function select(Model $model, $fields) {
     $table = $this->tableName($model);
     $where = $this->constructWhere($fields);
 
@@ -46,7 +46,7 @@ class SqlQueryFactory {
     }
   }
 
-  function delete(Model $model, $fields) {
+  public function delete(Model $model, $fields) {
     $table = $this->tableName($model);
     $where = $this->constructWhere($fields);
 
@@ -55,5 +55,25 @@ class SqlQueryFactory {
     } else {
       return 'DELETE FROM ' . $table . ' WHERE ' . $where[0] . ';';
     }
+  }
+
+  public function update(Model $model, $whereFields, $fields) {
+    $table = $this->tableName($model);
+    $where = $this->constructWhere($whereFields);
+    $set = $this->constructWhere($fields);
+
+    if (count($where) > 1) {
+      $where = implode(' AND', $where) . ';';
+    } else {
+      $where = $where[0];
+    }
+
+    if (count($set) > 1) {
+      $set = implode(',', $set) . ';';
+    } else {
+      $set = $set[0];
+    }
+
+    return 'UPDATE ' . $table . ' SET ' . $set . ' WHERE ' . $where . ';';
   }
 }

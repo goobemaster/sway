@@ -15,6 +15,6 @@ class Book extends Model {
   public $edition = '';
 
   public function __construct(EnvironmentDetails $environment) {
-    parent::__construct($environment, ['GET', 'PUT', 'DELETE']);
+    parent::__construct($environment, ['GET', 'PUT', 'DELETE', 'POST']);
   }
 }
