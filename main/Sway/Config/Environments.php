@@ -1,16 +1,24 @@
 <?php
 
+/*
+  Copyright 2015 Gabor Major
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 namespace Sway\Config;
 
 require_once 'autoload.php';
-
-// Root problem: Lack of native enums in PHP
-// Problem 1. - Expression is not allowed as constant value
-// Problem 2. - Only scalar values allowed when defining constants via define()
-// Problem 3. - While SPL is enabled by default since PHP 5.0, SplEnum (a subset) is not!
-// Problem 4. - Properties cannot be declared as final.
-
-// My Workaround
 
 final class Environments {
   public static function DEV() {
