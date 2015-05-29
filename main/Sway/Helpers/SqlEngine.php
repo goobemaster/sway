@@ -26,7 +26,7 @@ class SqlEngine {
   private $dbUsername;
   private $dbPassword;
   private $dbName;
-  private $sqlQueryFactory;
+  private $sqlQuery;
 
   public function __construct($dbHost, $dbPort, $dbUsername, $dbPassword, $dbName) {
     $this->dbHost = $dbHost;
@@ -34,7 +34,7 @@ class SqlEngine {
     $this->dbUsername = $dbUsername;
     $this->dbPassword = $dbPassword;
     $this->dbName = $dbName;
-    $this->sqlQueryFactory = new SqlQueryFactory();
+    $this->sqlQuery = new SqlQuery();
   }
 
   public function insert(Model $model) {
@@ -44,7 +44,7 @@ class SqlEngine {
       return false;
     }
 
-    if ($mysqli->query($this->sqlQueryFactory->insert($model)) === FALSE) {
+    if ($mysqli->query($this->sqlQuery->insert($model)) === FALSE) {
       $mysqli->close();
       return false;
     }
@@ -60,7 +60,7 @@ class SqlEngine {
       return false;
     }
 
-    if (!$result = $mysqli->query($this->sqlQueryFactory->select($model, $fields))) return false;
+    if (!$result = $mysqli->query($this->sqlQuery->select($model, $fields))) return false;
 
     $r = $result->fetch_all(MYSQLI_ASSOC);
     $result->close();
@@ -80,7 +80,7 @@ class SqlEngine {
       return false;
     }
 
-    if ($mysqli->query($this->sqlQueryFactory->delete($model, $fields))) {
+    if ($mysqli->query($this->sqlQuery->delete($model, $fields))) {
       $affectedRows = $mysqli->affected_rows;
       $mysqli->close();
       if ($affectedRows == 0) return null;
@@ -98,7 +98,7 @@ class SqlEngine {
       return false;
     }
 
-    if ($mysqli->query($this->sqlQueryFactory->update($model, $whereFields, $fields))) {
+    if ($mysqli->query($this->sqlQuery->update($model, $whereFields, $fields))) {
       $affectedRows = $mysqli->affected_rows;
       $mysqli->close();
       if ($affectedRows == 0) return null;

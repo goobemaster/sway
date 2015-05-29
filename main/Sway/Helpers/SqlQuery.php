@@ -20,7 +20,7 @@ namespace Sway\Helpers;
 
 use Sway\Core\Model;
 
-class SqlQueryFactory {
+class SqlQuery {
   // Helpers
   private function tableName(Model $model) {
     return StringTools::snakeCaseMe(explode('\\', get_class($model))[2]);
