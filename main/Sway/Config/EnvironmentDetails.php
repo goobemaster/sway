@@ -18,7 +18,7 @@
 
 namespace Sway\Config;
 
-final class EnvironmentDetails {
+class EnvironmentDetails {
   private $dbEngine;
   private $dbHost;
   private $dbPort;
@@ -27,7 +27,7 @@ final class EnvironmentDetails {
   private $dbName;
   private $phpErrorReporting;
 
-  public function __construct($dbEngine = "mysql", $dbHost = "127.0.0.1", $dbPort = "3306", $dbUsername = "root", $dbPassword = "", $dbName = "sway", $phpErrorReporting) {
+  public function __construct($dbEngine = "mysql", $dbHost = "127.0.0.1", $dbPort = "3306", $dbUsername = "root", $dbPassword = "", $dbName = "sway", $phpErrorReporting = 0) {
     $this->dbEngine = $dbEngine;
     $this->dbHost = $dbHost;
     $this->dbPort = $dbPort;

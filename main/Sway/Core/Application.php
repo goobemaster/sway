@@ -20,7 +20,7 @@ namespace Sway\Core;
 
 require_once 'autoload.php';
 
-use Sway\Config\EnvironmentDetails;
+use Sway\Config\ApplicationConfig;
 
 class Application {
   const environment = null;
@@ -28,13 +28,13 @@ class Application {
   private $request;
   private $response;
 
-  public function __construct(EnvironmentDetails $environment, $models = array(), $allowedMethods = array('GET', 'POST', 'PUT', 'DELETE')) {
-    $this->environment = $environment;
-    $this->modelManager = new ModelManager($environment, $models);
+  public function __construct(ApplicationConfig $applicationConfig) {
+    $this->environment = $applicationConfig->environment();
+    $this->modelManager = new ModelManager($applicationConfig->environment(), $applicationConfig->models());
     $this->request = new Request();
 
     $requestMethod = $this->request->method;
-    if (in_array($requestMethod, $allowedMethods)) {
+    if (in_array($requestMethod, $applicationConfig->allowedMethods())) {
       $this->$requestMethod();
     } else {
       $this->response = Response::METHOD_NOT_ALLOWED('Due to global config');

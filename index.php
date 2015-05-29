@@ -21,12 +21,16 @@ namespace Sway;
 require_once 'autoload.php';
 
 use Sway\Config\Environments;
+use Sway\Config\ApplicationConfig;
 use Sway\Core\Application;
 
 class MyApplication extends Application {
   public function __construct() {
-    // Params: Environment, Models, Allowed Methods
-    parent::__construct(Environments::DEV(), ['Book'], ['GET', 'POST', 'PUT', 'DELETE']);
+    $config = new ApplicationConfig();
+
+    parent::__construct($config->setEnvironment(Environments::DEV())
+                               ->setModels(['Book'])
+                               ->setAllowedMethods(['GET', 'POST', 'PUT', 'DELETE']));
   }
 }
 
