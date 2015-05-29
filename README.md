@@ -16,6 +16,8 @@ Assume you have a MySQL database, and you need a GUI to do the most basic transa
 
 And boom, using postman you can select, create, update, delete records in any table given it has a corresponding model class.
 
+Of course there's much more to Sway than the trivial use case above. You'll likely to going to build upon it to implement your own web service / backend / whatever.
+
 # Models
 
 - Models are very simple classes inherited from Sway\\Core\\Model.
@@ -34,6 +36,23 @@ class Book extends Model {
 
   public function __construct(EnvironmentDetails $environment) {
     parent::__construct($environment, ['GET', 'PUT', 'DELETE', 'POST']);
+  }
+}
+```
+
+## Custom Method Handlers
+
+So you don't like the stock GET, POST etc. handlers, or you would like to implement lets say PATCH for a given model?
+
+The core application first checks the requested model for the presence of method handlers, and calls them. Don't forget to enable the method on both global and model level.
+
+The request is exposed in these hook methods, and the only criteria to write a valid handler is to return with a ResponseDetails object. For the sake of readability, Response class has a bunch of static methods.
+
+```php
+class Book extends Model {
+  // ...
+  public function PATCH(Request $request) {
+    return Response::NOT_IMPLEMENTED();
   }
 }
 ```

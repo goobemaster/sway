@@ -32,10 +32,24 @@ class Application {
     $this->environment = $applicationConfig->environment();
     $this->modelManager = new ModelManager($applicationConfig->environment(), $applicationConfig->models());
     $this->request = new Request();
-
     $requestMethod = $this->request->method;
+    $requestModel = $this->request->path[0];
+
     if (in_array($requestMethod, $applicationConfig->allowedMethods())) {
-      $this->$requestMethod();
+      if ($this->modelManager->hasMethodHandler($requestModel, $requestMethod)) {
+        $model = $this->modelManager->getEmptyModel($requestModel);
+        if (!in_array($requestMethod, $model->allowedMethods())) {
+          $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
+        } else {
+          $this->response = $model->$requestMethod($this->request);
+        }
+      } else {
+        if (method_exists($this, $requestMethod)) {
+          $this->$requestMethod();
+        } else {
+
+        }
+      }
     } else {
       $this->response = Response::METHOD_NOT_ALLOWED('Due to global config');
     }

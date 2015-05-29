@@ -23,7 +23,7 @@ require_once 'autoload.php';
 use Sway\Config\EnvironmentDetails;
 use Sway\Helpers\StringTools;
 
-class ModelManager {
+final class ModelManager {
   private $environment;
   private $models;
 
@@ -53,5 +53,9 @@ class ModelManager {
       if(file_exists($filename)) return true;
     }
     return false;
+  }
+
+  public function hasMethodHandler($model, $method) {
+    return method_exists($this->getEmptyModel($model), $method);
   }
 }

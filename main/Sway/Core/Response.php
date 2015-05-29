@@ -25,14 +25,16 @@ final class Response {
   public static function OK($message = null) { return new ResponseDetails(200, 'OK', $message); }
 
   // 4xx - Client Error
-         public static function METHOD_NOT_ALLOWED($message = null) { return new ResponseDetails(452, 'Method not allowed', $message); }
-            public static function MODEL_NOT_FOUND($message = null) { return new ResponseDetails(453, 'Model cannot be found', $message); }
-  public static function MODEL_CANNOT_BE_POPULATED($message = null) { return new ResponseDetails(454, 'Model could not be populated!', $message); }
-         public static function NO_FIELDS_PROVIDED($message = null) { return new ResponseDetails(455, 'No fields provided!', $message); }
-         public static function NO_MATCHING_RECORD($message = null) { return new ResponseDetails(456, 'No matching record(s)!', $message); }
-                 public static function NO_RESULTS($message = null) { return new ResponseDetails(457, 'No result(s)!', $message); }
-       public static function FIELD_DOES_NOT_EXIST($message = null) { return new ResponseDetails(457, 'Field does not exist in model!', $message); }
+          public static function METHOD_NOT_ALLOWED($message = null) { return new ResponseDetails(452, 'Method not allowed', $message); }
+             public static function MODEL_NOT_FOUND($message = null) { return new ResponseDetails(453, 'Model cannot be found', $message); }
+   public static function MODEL_CANNOT_BE_POPULATED($message = null) { return new ResponseDetails(454, 'Model could not be populated!', $message); }
+          public static function NO_FIELDS_PROVIDED($message = null) { return new ResponseDetails(455, 'No fields provided!', $message); }
+          public static function NO_MATCHING_RECORD($message = null) { return new ResponseDetails(456, 'No matching record(s)!', $message); }
+                  public static function NO_RESULTS($message = null) { return new ResponseDetails(457, 'No result(s)!', $message); }
+        public static function FIELD_DOES_NOT_EXIST($message = null) { return new ResponseDetails(458, 'Field does not exist in model!', $message); }
+  public static function MODEL_CANNOT_HANDLE_METHOD($message = null) { return new ResponseDetails(459, 'Model cannot handle this method!', $message); }
 
   // 5xx - Server Error
   public static function INTERNAL_SERVER_ERROR($message = null) { return new ResponseDetails(500, 'Internal Server Error', $message); }
+  public static function NOT_IMPLEMENTED($message = null) { return new ResponseDetails(501, 'Not Implemented', $message); }
 }

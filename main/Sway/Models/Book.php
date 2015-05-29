@@ -20,8 +20,10 @@ namespace Sway\Models;
 
 require_once 'autoload.php';
 
-use Sway\Core\Model;
 use Sway\Config\EnvironmentDetails;
+use Sway\Core\Model;
+use Sway\Core\Request;
+use Sway\Core\Response;
 
 class Book extends Model {
   public $id = 'primaryKey';
@@ -31,6 +33,10 @@ class Book extends Model {
   public $edition = '';
 
   public function __construct(EnvironmentDetails $environment) {
-    parent::__construct($environment, ['GET', 'PUT', 'DELETE', 'POST']);
+    parent::__construct($environment, ['GET', 'PUT', 'DELETE', 'POST', 'VIEW']);
+  }
+
+  public function VIEW(Request $request) {
+    return Response::NOT_IMPLEMENTED();
   }
 }

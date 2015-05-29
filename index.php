@@ -30,7 +30,7 @@ class MyApplication extends Application {
 
     parent::__construct($config->setEnvironment(Environments::DEV())
                                ->setModels(['Book'])
-                               ->setAllowedMethods(['GET', 'POST', 'PUT', 'DELETE']));
+                               ->setAllowedMethods(['GET', 'POST', 'PUT', 'DELETE', 'VIEW']));
   }
 }
 
