@@ -86,7 +86,7 @@ class Application {
   private function GET() {
     $model = $this->getModel();
 
-    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+    if (is_a($model, 'Sway\\Core\\ResponseDetails')) {
       $this->response = $model;
       return;
     }
@@ -111,7 +111,7 @@ class Application {
   private function POST() {
     $model = $this->getModel();
 
-    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+    if (is_a($model, 'Sway\\Core\\ResponseDetails')) {
       $this->response = $model;
       return;
     }
@@ -133,7 +133,7 @@ class Application {
   private function PUT() {
     $model = $this->getModel();
 
-    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+    if (is_a($model, 'Sway\\Core\\ResponseDetails')) {
       $this->response = $model;
       return;
     }
@@ -154,7 +154,7 @@ class Application {
   private function DELETE() {
     $model = $this->getModel();
 
-    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+    if (is_a($model, 'Sway\\Core\\ResponseDetails')) {
       $this->response = $model;
       return;
     }
