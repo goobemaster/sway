@@ -25,15 +25,19 @@ class EnvironmentDetails {
   private $dbUsername;
   private $dbPassword;
   private $dbName;
+  private $basicAuthUsername;
+  private $basicAuthPassword;
   private $phpErrorReporting;
 
-  public function __construct($dbEngine = "mysql", $dbHost = "127.0.0.1", $dbPort = "3306", $dbUsername = "root", $dbPassword = "", $dbName = "sway", $phpErrorReporting = 0) {
+  public function __construct($dbEngine = 'mysql', $dbHost = '127.0.0.1', $dbPort = '3306', $dbUsername = 'root', $dbPassword = '', $dbName = 'sway', $basicAuthUsername = 'root', $basicAuthPassword = '', $phpErrorReporting = 0) {
     $this->dbEngine = $dbEngine;
     $this->dbHost = $dbHost;
     $this->dbPort = $dbPort;
     $this->dbUsername = $dbUsername;
     $this->dbPassword = $dbPassword;
     $this->dbName = $dbName;
+    $this->basicAuthUsername = $basicAuthUsername;
+    $this->basicAuthPassword = $basicAuthPassword;
     $this->phpErrorReporting = $phpErrorReporting; error_reporting($phpErrorReporting);
   }
 
@@ -63,5 +67,13 @@ class EnvironmentDetails {
 
   public function phpErrorReporting() {
     return $this->phpErrorReporting;
+  }
+
+  public function basicAuthUsername() {
+    return ($this->basicAuthUsername == null ? '' : $this->basicAuthUsername);
+  }
+
+  public function basicAuthPassword() {
+    return ($this->basicAuthPassword == null ? '' : $this->basicAuthPassword);
   }
 }

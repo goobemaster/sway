@@ -23,19 +23,32 @@ require_once 'autoload.php';
 use Sway\Config\ApplicationConfig;
 
 class Application {
-  const environment = null;
+  const config = null;
   private $modelManager;
   private $request;
   private $response;
 
   public function __construct(ApplicationConfig $applicationConfig) {
-    $this->environment = $applicationConfig->environment();
+    $this->config = $applicationConfig;
     $this->modelManager = new ModelManager($applicationConfig->environment(), $applicationConfig->models());
     $this->request = new Request();
-    $requestMethod = $this->request->method;
-    $requestModel = $this->request->path[0];
+    $requestMethod = $this->request->method();
+    $requestModel = $this->request->path()[0];
 
-    if (in_array($requestMethod, $applicationConfig->allowedMethods())) {
+    if ($this->config->basicAuthEnabled()) {
+      if (!($this->request->basicAuthUsername() == $this->config->environment()->basicAuthUsername() && $this->request->basicAuthPassword() == $this->config->environment()->basicAuthPassword())) {
+        $this->response = Response::UNAUTHORIZED();
+        $this->response->commit();
+        return;
+      }
+    }
+
+    $this->executeMethodHandler($requestMethod, $requestModel);
+    $this->response->commit();
+  }
+
+  private function executeMethodHandler($requestMethod, $requestModel) {
+    if (in_array($requestMethod, $this->config->allowedMethods())) {
       if ($this->modelManager->hasMethodHandler($requestModel, $requestMethod)) {
         $model = $this->modelManager->getEmptyModel($requestModel);
         if (!in_array($requestMethod, $model->allowedMethods())) {
@@ -47,36 +60,43 @@ class Application {
         if (method_exists($this, $requestMethod)) {
           $this->$requestMethod();
         } else {
-
+          $this->response = Response::MODEL_CANNOT_HANDLE_METHOD();
         }
       }
     } else {
       $this->response = Response::METHOD_NOT_ALLOWED('Due to global config');
     }
+  }
 
-    $this->response->commit();
+  private function getModel() {
+    $model = $this->modelManager->getEmptyModel($this->request->path()[0]);
+
+    if ($model == null) {
+      return Response::MODEL_NOT_FOUND();
+    }
+
+    if (!in_array('GET', $model->allowedMethods())) {
+      return Response::METHOD_NOT_ALLOWED('Due to model config');
+    }
+
+    return $model;
   }
 
   // Fetch
   private function GET() {
-    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+    $model = $this->getModel();
 
-    if ($model == null) {
-      $this->response = Response::MODEL_NOT_FOUND();
+    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+      $this->response = $model;
       return;
     }
 
-    if (!in_array('GET', $model->allowedMethods())) {
-      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
-      return;
-    }
-
-    if (empty($this->request->query)) {
+    if (empty($this->request->query())) {
       $this->response = Response::NO_FIELDS_PROVIDED();
       return;
     }
 
-    if ($json = $model->select($this->request->query)) {
+    if ($json = $model->select($this->request->query())) {
       $this->response = Response::OK('Entity:' . $json);
       // Hack, because NULL == FALSE
       return;
@@ -89,19 +109,14 @@ class Application {
 
   // Update
   private function POST() {
-    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+    $model = $this->getModel();
 
-    if ($model == null) {
-      $this->response = Response::MODEL_NOT_FOUND();
+    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+      $this->response = $model;
       return;
     }
 
-    if (!in_array('POST', $model->allowedMethods())) {
-      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
-      return;
-    }
-
-    $records = $model->update($this->request->query, $this->request->form);
+    $records = $model->update($this->request->query(), $this->request->form());
 
     if ($records instanceof ResponseDetails) {
       $this->response = $records;
@@ -116,19 +131,14 @@ class Application {
 
   // Create
   private function PUT() {
-    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+    $model = $this->getModel();
 
-    if ($model == null) {
-      $this->response = Response::MODEL_NOT_FOUND();
+    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+      $this->response = $model;
       return;
     }
 
-    if (!in_array('PUT', $model->allowedMethods())) {
-      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
-      return;
-    }
-
-    if (!$model->populate($this->request->headers)) {
+    if (!$model->populate($this->request->headers())) {
       $this->response = Response::MODEL_CANNOT_BE_POPULATED();
       return;
     }
@@ -142,24 +152,19 @@ class Application {
 
   // Remove
   private function DELETE() {
-    $model = $this->modelManager->getEmptyModel($this->request->path[0]);
+    $model = $this->getModel();
 
-    if ($model == null) {
-      $this->response = Response::MODEL_NOT_FOUND();
+    if (is_a($model, 'Sway\\Models\\ResponseDetails')) {
+      $this->response = $model;
       return;
     }
 
-    if (!in_array('DELETE', $model->allowedMethods())) {
-      $this->response = Response::METHOD_NOT_ALLOWED('Due to model config');
-      return;
-    }
-
-    if (empty($this->request->headers)) {
+    if (empty($this->request->headers())) {
       $this->response = Response::NO_FIELDS_PROVIDED();
       return;
     }
 
-    if ($records = $model->delete($this->request->headers)) {
+    if ($records = $model->delete($this->request->headers())) {
       $this->response = Response::OK($records . ' record(s) deleted');
       // Hack, because NULL == FALSE
       return;

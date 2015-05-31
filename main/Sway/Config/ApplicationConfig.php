@@ -24,11 +24,13 @@ final class ApplicationConfig {
   private $environmentDetails;
   private $models;
   private $allowedMethods;
+  private $basicAuthEnabled;
 
   public function __construct() {
     $this->environmentDetails = Environments::DEV();
     $this->models = array();
     $this->allowedMethods = array('GET', 'POST', 'PUT', 'DELETE');
+    $this->basicAuthEnabled = false;
   }
 
   public function setEnvironment(EnvironmentDetails $environmentDetails) {
@@ -56,5 +58,14 @@ final class ApplicationConfig {
 
   public function allowedMethods() {
     return $this->allowedMethods;
+  }
+
+  public function setBasicAuthEnabled($basicAuthEnabled) {
+    $this->basicAuthEnabled = $basicAuthEnabled;
+    return $this;
+  }
+
+  public function basicAuthEnabled() {
+    return $this->basicAuthEnabled;
   }
 }

@@ -22,6 +22,6 @@ require_once 'autoload.php';
 
 final class Environments {
   public static function DEV() {
-    return new EnvironmentDetails("mysql", "127.0.0.1", 3306, "root", "", "sway", 0);
+    return new EnvironmentDetails('mysql', '127.0.0.1', 3306, 'root', '', 'sway', 'root', '', 0);
   }
 }

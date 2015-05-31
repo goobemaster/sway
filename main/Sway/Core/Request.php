@@ -19,11 +19,13 @@
 namespace Sway\Core;
 
 class Request {
-  public $method;
-  public $path;
-  public $form;
-  public $query;
-  public $headers;
+  private $method;
+  private $path;
+  private $form;
+  private $query;
+  private $headers;
+  private $basicAuthUsername;
+  private $basicAuthPassword;
 
   public function __construct() {
     $this->method = $_SERVER['REQUEST_METHOD'];
@@ -31,5 +33,35 @@ class Request {
     $this->form = $_POST;
     $this->query = $_GET;
     $this->headers = getallheaders();
+    $this->basicAuthUsername = $_SERVER['PHP_AUTH_USER'];
+    $this->basicAuthPassword = $_SERVER['PHP_AUTH_PW'];
+  }
+
+  public function method() {
+    return $this->method;
+  }
+
+  public function path() {
+    return $this->path;
+  }
+
+  public function form() {
+    return $this->form;
+  }
+
+  public function query() {
+    return $this->query;
+  }
+
+  public function headers() {
+    return $this->headers;
+  }
+
+  public function basicAuthUsername() {
+    return ($this->basicAuthUsername == null ? '' : $this->basicAuthUsername);
+  }
+
+  public function basicAuthPassword() {
+    return ($this->basicAuthPassword == null ? '' : $this->basicAuthPassword);
   }
 }
