@@ -37,5 +37,6 @@ final class Response {
 
   // 5xx - Server Error
   public static function INTERNAL_SERVER_ERROR($message = null) { return new ResponseDetails(500, 'Internal Server Error', $message); }
-  public static function NOT_IMPLEMENTED($message = null) { return new ResponseDetails(501, 'Not Implemented', $message); }
+        public static function NOT_IMPLEMENTED($message = null) { return new ResponseDetails(501, 'Not Implemented', $message); }
+    public static function SERVICE_UNAVAILABLE($message = null) { return new ResponseDetails(503, 'Service Unavailable', $message); }
 }

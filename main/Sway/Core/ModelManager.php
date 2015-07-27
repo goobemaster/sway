@@ -32,14 +32,14 @@ final class ModelManager {
     if (!empty($models)) $this->models = $models;
   }
 
-  private function count() {
+  public function count() {
     return count($this->models);
   }
 
   public function getEmptyModel($model) {
     $model = StringTools::camelizeMe($model, false);
 
-    if ($this->count() > 0 && in_array($model, $this->models) && $this->isModelExists($model)) {
+    if ($this->count() > 0 && in_array($model, $this->models) && $this->doesModelExists($model)) {
       $model = 'Sway\\Models\\' . $model;
       return new $model($this->environment);
     } else {
@@ -47,7 +47,7 @@ final class ModelManager {
     }
   }
 
-  private function isModelExists($model) {
+  private function doesModelExists($model) {
     foreach(rglob('main') as $directory) {
       $filename = $directory . '\\' . $model . '.php';
       if(file_exists($filename)) return true;

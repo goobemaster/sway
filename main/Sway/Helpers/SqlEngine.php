@@ -26,6 +26,7 @@ class SqlEngine {
   private $dbUsername;
   private $dbPassword;
   private $dbName;
+  private $mysqli;
   private $sqlQuery;
 
   public function __construct($dbHost, $dbPort, $dbUsername, $dbPassword, $dbName) {
@@ -34,37 +35,47 @@ class SqlEngine {
     $this->dbUsername = $dbUsername;
     $this->dbPassword = $dbPassword;
     $this->dbName = $dbName;
+    $this->mysqli = null;
     $this->sqlQuery = new SqlQuery();
   }
 
+  private function connect() {
+    $this->mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+    return $this->mysqli->connect_error;
+  }
+
+  public function status() {
+    $status = !$this->connect();
+    $this->mysqli->close();
+    return $status;
+  }
+
   public function insert(Model $model) {
-    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-    if ($mysqli->connect_error) {
-      $mysqli->close();
+    if (!$this->connect()) {
+      $this->mysqli->close();
       return false;
     }
 
-    if ($mysqli->query($this->sqlQuery->insert($model)) === FALSE) {
-      $mysqli->close();
+    if ($this->mysqli->query($this->sqlQuery->insert($model)) === FALSE) {
+      $this->mysqli->close();
       return false;
     }
 
-    $mysqli->close();
+    $this->mysqli->close();
     return true;
   }
 
   public function select(Model $model, $fields) {
-    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-    if ($mysqli->connect_error) {
-      $mysqli->close();
+    if (!$this->connect()) {
+      $this->mysqli->close();
       return false;
     }
 
-    if (!$result = $mysqli->query($this->sqlQuery->select($model, $fields))) return false;
+    if (!$result = $this->mysqli->query($this->sqlQuery->select($model, $fields))) return false;
 
     $r = $result->fetch_all(MYSQLI_ASSOC);
     $result->close();
-    $mysqli->close();
+    $this->mysqli->close();
     if (count($r) == 0) {
       return null;
     } else {
@@ -74,37 +85,35 @@ class SqlEngine {
   }
 
   public function delete(Model $model, $fields) {
-    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-    if ($mysqli->connect_error) {
-      $mysqli->close();
+    if (!$this->connect()) {
+      $this->mysqli->close();
       return false;
     }
 
-    if ($mysqli->query($this->sqlQuery->delete($model, $fields))) {
-      $affectedRows = $mysqli->affected_rows;
-      $mysqli->close();
+    if ($this->mysqli->query($this->sqlQuery->delete($model, $fields))) {
+      $affectedRows = $this->mysqli->affected_rows;
+      $this->mysqli->close();
       if ($affectedRows == 0) return null;
       return $affectedRows;
     } else {
-      $mysqli->close();
+      $this->mysqli->close();
       return false;
     }
   }
 
   public function update(Model $model, $whereFields, $fields) {
-    $mysqli = new \mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-    if ($mysqli->connect_error) {
-      $mysqli->close();
+    if (!$this->connect()) {
+      $this->mysqli->close();
       return false;
     }
 
-    if ($mysqli->query($this->sqlQuery->update($model, $whereFields, $fields))) {
-      $affectedRows = $mysqli->affected_rows;
-      $mysqli->close();
+    if ($this->mysqli->query($this->sqlQuery->update($model, $whereFields, $fields))) {
+      $affectedRows = $this->mysqli->affected_rows;
+      $this->mysqli->close();
       if ($affectedRows == 0) return null;
       return $affectedRows;
     } else {
-      $mysqli->close();
+      $this->mysqli->close();
       return false;
     }
   }

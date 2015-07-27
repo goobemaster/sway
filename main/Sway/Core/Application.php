@@ -21,6 +21,7 @@ namespace Sway\Core;
 require_once 'autoload.php';
 
 use Sway\Config\ApplicationConfig;
+use Sway\Helpers\SqlEngine;
 
 class Application {
   const config = null;
@@ -43,11 +44,17 @@ class Application {
       }
     }
 
+    if ($requestModel == 'status' && $requestMethod == 'GET') {
+      $this->status();
+      $this->response->commit();
+      return;
+    }
+
     $this->executeMethodHandler($requestMethod, $requestModel);
     $this->response->commit();
   }
 
-  private function executeMethodHandler($requestMethod, $requestModel) {
+  private final function executeMethodHandler($requestMethod, $requestModel) {
     if (in_array($requestMethod, $this->config->allowedMethods())) {
       if ($this->modelManager->hasMethodHandler($requestModel, $requestMethod)) {
         $model = $this->modelManager->getEmptyModel($requestModel);
@@ -68,7 +75,7 @@ class Application {
     }
   }
 
-  private function getModel() {
+  private final function getModel() {
     $model = $this->modelManager->getEmptyModel($this->request->path()[0]);
 
     if ($model == null) {
@@ -80,6 +87,25 @@ class Application {
     }
 
     return $model;
+  }
+
+  private function status() {
+    $modelCount = $this->modelManager->count();
+
+    if ($this->config->environment()->dbEngine() == 'mysql') {
+      $dbConnection = new SqlEngine($this->config->environment()->dbHost(), $this->config->environment()->dbPort(), $this->config->environment()->dbUsername(), $this->config->environment()->dbPassword(), $this->config->environment()->dbName());
+      $dbConnectionStatus = $dbConnection->status();
+    } else {
+      $dbConnectionStatus = null;
+    }
+
+    $json = "{\"modelCount\": " . $modelCount . ", \"dbConnection\": " . ($dbConnectionStatus ? 'true' : 'false')  . '}';
+
+    if ($modelCount > 0 && $dbConnectionStatus == true) {
+      $this->response = Response::OK('Entity:' . $json);
+    } else {
+      $this->response = Response::SERVICE_UNAVAILABLE('Entity:' . $json);
+    }
   }
 
   // Fetch
