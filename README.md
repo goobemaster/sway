@@ -1,8 +1,6 @@
 # sway
 
-This documentation will be more complete as the project progresses. Sway is still a very young project, and hence stay away from using it in live projects.
-
-There's loads of stuff on the roadmap.
+This project is defunct. It is "feature complete", however it will never receive any more updates and improvements. Use it at your own risk, and preferably not in live projects.
 
 # Overview
 
